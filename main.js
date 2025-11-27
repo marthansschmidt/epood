@@ -1,100 +1,27 @@
-class Product {
-    constructor(id, title, price, category) {
-        this.id = id;
-        this.title = title;
-        this.price = price;
-        this.category = category;
-    }
+import { Product } from "./product.js";
+import { Cart } from "./cart.js";
+import { Customer } from "./customer.js";
 
-    describe() {
-        return `${this.title} | Hind: ${this.price}€ | Kategooria: ${this.category}`;
-    }
 
-    static discountedPrice(price, percent) {
-        return price - (price * (percent / 100));
-    }
-}
+const laptop = new Product(1, "Sülearvuti", 799.99, "Elektroonika");
+const phone = new Product(2, "Telefon", 699.99, "Elektroonika");
 
-class Cart {
-    constructor() {
-        this.items = []; 
-        
-    }
+console.log(laptop.describe());
+console.log(phone.describe());
 
-    addProduct(product, quantity) {
-        const existing = this.items.find(i => i.product.id === product.id);
-        if (existing) {
-            existing.quantity += quantity;
-        } else {
-            this.items.push({ product, quantity });
-        }
-    }
+console.log("Allahindlus 10%:", Product.discountedPrice(laptop.price, 10));
 
-    removeProduct(productId) {
-        this.items = this.items.filter(i => i.product.id !== productId);
-    }
 
-    calculateTotal() {
-        return this.items.reduce((sum, i) => sum + i.product.price * i.quantity, 0);
-    }
-
-    get totalItems() {
-        return this.items.reduce((sum, i) => sum + i.quantity, 0);
-    }
-}
-
-class Order {
-    constructor(cart) {
-        this.orderDate = new Date();
-        this.cart = cart;
-    }
-
-    printOrder() {
-        console.log("Tellimuse kuupäev:", this.orderDate.toLocaleString());
-        console.log("Tooted:");
-
-        this.cart.items.forEach(i => {
-            console.log(`- ${i.product.title} x${i.quantity} = ${i.product.price * i.quantity}€`);
-        });
-
-        console.log("Kogusumma:", this.cart.calculateTotal() + "€");
-    }
-}
-
-class Customer {
-    constructor(name) {
-        this.name = name;
-        this.orderHistory = [];
-    }
-
-    placeOrder(cart) {
-        const order = new Order(cart);
-        this.orderHistory.push(order);
-        return order;
-    }
-
-    printOrderHistory() {
-        console.log(`Tellimuste ajalugu: ${this.name}`);
-        this.orderHistory.forEach((order, index) => {
-            console.log(
-                `${index + 1}. Kuupäev: ${order.orderDate.toLocaleString()} | Summa: ${order.cart.calculateTotal()}€`
-            );
-        });
-    }
-}
-
-const computer = new Product(1, "Lauaarvuti", 895, "Elektroonika");
-console.log(computer.describe());
-console.log(Product.discountedPrice(computer.price, 10));
 
 const cart = new Cart();
-cart.addProduct(computer, 4);
+cart.addProduct(laptop, 1);
+cart.addProduct(phone, 2);
 
-console.log("Kokku:", cart.calculateTotal());
-console.log("Tooteid:", cart.totalItems);
+console.log("Kogusumma:", cart.calculateTotal());
+console.log("Kokku tooteid ostukorvis:", cart.totalItems);
 
-const customer = new Customer("Joonas");
-const order = customer.placeOrder(cart);
-order.printOrder();
 
+const customer = new Customer("Jaanus Maasik");
+
+customer.placeOrder(cart);
 customer.printOrderHistory();
