@@ -1,13 +1,48 @@
 <!DOCTYPE html>
 <html lang="et">
 <head>
-    <meta charset="UTF-8">
-    <title>E-pood Moodulitega</title>
+  <meta charset="UTF-8" />
+  <title>Veebipood</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
 </head>
 <body>
+  <header>
 
-    <h1>E-pood moodulsüsteemiga, Ülesanne 2</h1>
+  <!-- LOGO ERALDI VEERUS -->
+  <img src="icons/logo.png" alt="HansTech Logo" class="logo">
 
-    <script type="module" src="main.js"></script>
+  <!-- BRAND / TEKST -->
+  <div id="brand">
+    <p class="tagline">
+      Uuendused Hanstechist teieni – tehke jõuluostud kiirelt ja muretult!
+    </p>
+  </div>
+
+  <!-- NAV -->
+  <nav id="main-nav">
+    <button class="nav-btn" id="nav-home" aria-label="Avaleht">
+      <img src="icons/home.png" class="nav-icon">
+    </button>
+
+    <button class="nav-btn" id="nav-favorites" aria-label="Lemmikud">
+      <img src="icons/favourite.png" class="nav-icon">
+    </button>
+
+    <button class="nav-btn" id="nav-cart" aria-label="Ostukorv">
+      <img src="icons/cart.png" class="nav-icon">
+    </button>
+  </nav>
+
+</header>
+
+
+
+  <main id="app"></main>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>

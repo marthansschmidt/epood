@@ -1,0 +1,470 @@
+/* ============================================================
+   VÄRVID – sinu uue paleti põhjal
+   ============================================================ */
+
+:root {
+  --light: #FFFCF2;
+  --stone: #CCC5B9;
+  --card: #403D39;
+  --dark: #252422;
+  --accent: #EB5E28;
+}
+
+/* ============================================================
+   GLOBAL
+   ============================================================ */
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--light);
+  color: var(--dark);
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* ============================================================
+   HEADER – kompaktne, joondatud, modernne
+   ============================================================ */
+
+header {
+  width: 100vw;
+  min-height: 110px;
+  background: var(--dark);
+  padding: 16px 40px;
+
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  column-gap: 30px;
+
+  color: var(--light);
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.35);
+  box-sizing: border-box;
+}
+
+/* Logo */
+
+.logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  object-fit: cover;
+  cursor: pointer;
+
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.logo:hover {
+  transform: scale(1.07);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(235, 94, 40, 0.55);
+}
+
+/* ============================================================
+   BRAND
+   ============================================================ */
+
+#brand {
+  display: flex;
+  flex-direction: column;
+  justify-self: start;
+  align-items: flex-start;
+  text-align: left;
+}
+
+.store-name {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 0 0 4px 0;
+  color: var(--light);
+}
+
+.tagline {
+  font-size: 15px;
+  opacity: 0.85;
+  line-height: 1.3;
+  max-width: 480px;
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+
+#main-nav {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  justify-self: end;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.nav-btn:active {
+  transform: scale(0.92);
+}
+
+.nav-icon {
+  width: 30px;
+  height: 30px;
+  padding: 6px;
+
+  background: var(--stone);
+  border-radius: 10px;
+  border: 2px solid var(--accent);
+
+  transition: 0.25s ease;
+}
+
+/* --- hover ilma siniseks minemata --- */
+.nav-btn:hover .nav-icon {
+  background: var(--accent);
+  border-color: var(--light);
+  transform: translateY(-2px);
+  opacity: 0.85;
+  filter: none;
+}
+
+/* ============================================================
+   SEKTSIOON
+   ============================================================ */
+
+.section {
+  background: var(--light);
+  border: 2px solid var(--dark);
+  border-radius: 16px;
+  padding: 28px;
+  margin: 32px 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.section h2 {
+  font-size: 26px;
+  font-weight: 800;
+  margin-bottom: 22px;
+}
+
+/* ============================================================
+   PRODUCT GRID
+   ============================================================ */
+
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 32px;
+  justify-items: center;
+}
+
+/* ============================================================
+   PRODUCT CARD
+   ============================================================ */
+
+.product-card {
+  background: var(--card);
+  border: 2px solid var(--dark);
+  border-radius: 14px;
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  text-align: center;
+  align-items: center;
+
+  color: var(--light);
+  transition: 0.25s ease;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+}
+
+.product-card img {
+  width: 220px;
+  height: 180px;
+  object-fit: contain;
+  margin-bottom: 10px;
+}
+
+/* ============================================================
+   FAVORITE BUTTON
+   ============================================================ */
+
+.favorite-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+
+  width: 36px;
+  height: 36px;
+
+  background: var(--stone);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 0;
+  cursor: pointer;
+  transition: 0.25s ease;
+  z-index: 10;
+  box-sizing: content-box;
+}
+
+.favorite-btn img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  display: block;
+  margin: auto;
+  pointer-events: none;
+}
+
+.favorite-btn:hover {
+  background: var(--accent);
+  border-color: var(--light);
+  transform: scale(1.12);
+  opacity: 0.9;
+  filter: none;
+}
+
+.favorite-active {
+  background: var(--accent);
+  border-color: var(--light);
+  filter: none;
+}
+
+/* ============================================================
+   TEXT
+   ============================================================ */
+
+.product-card h4 {
+  font-size: 21px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.product-card p {
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.product-card .price {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   OSTA KOHE – BUTTON ALL KESKEL
+   ============================================================ */
+
+.product-actions {
+  margin-top: auto;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.product-actions .btn-primary {
+  width: 80%;
+  max-width: 200px;
+}
+
+/* CTA Button */
+.btn-primary {
+  width: 100%;
+  padding: 10px 0;
+  background: var(--accent);
+  color: var(--light);
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.25s ease;
+}
+
+.btn-primary:hover {
+  background: #cf511f;
+}
+
+/* ============================================================
+   DETAIL CARD
+   ============================================================ */
+
+.detail-card {
+  background: var(--card);
+  border: 2px solid var(--dark);
+  border-radius: 14px;
+  padding: 22px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+
+  color: var(--light);
+  position: relative;
+}
+
+.detail-card img {
+  width: 100%;
+  max-width: 380px;
+  object-fit: contain;
+  border-radius: 12px;
+  justify-self: center;
+}
+
+.detail-info h3 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.detail-info p {
+  opacity: 0.85;
+}
+
+/* ============================================================
+   CART & FAVORITES LIST
+   ============================================================ */
+
+.cart-item,
+.favorite-item {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: var(--light);
+}
+
+.cart-item:hover,
+.favorite-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+/* ============================================================
+   TOAST / TEAVITUSRIBA
+   ============================================================ */
+
+.toast-message {
+  position: fixed;
+  bottom: -80px;                /* animatsiooniks peidus */
+  right: 20px;
+  background: var(--accent);
+  color: var(--light);
+
+  padding: 14px 22px;
+  font-size: 16px;
+  border-radius: 10px;
+
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  opacity: 0;
+  transition: 0.3s ease;
+  z-index: 9999;
+
+  font-weight: 600;
+}
+
+.toast-message.visible {
+  bottom: 20px;                 /* ilmub nähtavale */
+  opacity: 1;
+}
+
+.cart-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cart-item-card {
+  display: flex;
+  gap: 16px;
+  background: var(--card);
+  border: 2px solid var(--dark);
+  border-radius: 12px;
+  padding: 16px;
+  color: var(--light);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.cart-item-img {
+  width: 110px;
+  height: 90px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: var(--stone);
+  padding: 6px;
+}
+
+.cart-item-info h4 {
+  margin: 0 0 6px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.cart-item-info p {
+  margin: 2px 0;
+  opacity: 0.85;
+}
+
+.cart-item-total {
+  margin-top: 6px;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+.cart-item-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.cart-remove-btn {
+  margin-left: auto;
+  background: var(--accent);
+  color: var(--light);
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s ease;
+}
+
+.cart-remove-btn:hover {
+  background: #cf511f;
+}
+
