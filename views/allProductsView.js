@@ -1,5 +1,28 @@
 import { navigateToProduct, addToCart } from "../main.js";
 
+/* ---------------------------------------------
+   TOAST: lemmikuks lisamine / eemaldamine
+--------------------------------------------- */
+function showFavoriteInfo(message) {
+  const toast = document.createElement("div");
+  toast.className = "cart-info-toast";
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("visible");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("visible");
+  }, 2000);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 2500);
+}
+
 export function renderAllProductsView(rootElement, products) {
   const section = document.createElement("section");
   section.className = "section";
@@ -22,7 +45,7 @@ export function renderAllProductsView(rootElement, products) {
     card.addEventListener("click", () => navigateToProduct(product.id));
 
     /* ---------------------------------------------
-       LEMMIKU NUPP
+       LEMMIKU NUPP + TOAST
     --------------------------------------------- */
     const favBtn = document.createElement("div");
     favBtn.className = "favorite-btn";
@@ -45,12 +68,15 @@ export function renderAllProductsView(rootElement, products) {
           window.appState.favorites.push(product);
         }
 
+        showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
       } else {
         favBtn.classList.remove("favorite-active");
 
         window.appState.favorites = window.appState.favorites.filter(
           p => p.id !== product.id
         );
+
+        showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
       }
     });
 
@@ -87,7 +113,7 @@ export function renderAllProductsView(rootElement, products) {
     card.appendChild(price);
 
     /* ---------------------------------------------
-       OSTA KOHE — alati kaardi all keskel
+       OSTA KOHE
     --------------------------------------------- */
     const actions = document.createElement("div");
     actions.className = "product-actions";

@@ -1,3 +1,24 @@
+function showRemoveInfo(message) {
+  const info = document.createElement("div");
+  info.className = "cart-info-toast";
+  info.textContent = message;
+
+  document.body.appendChild(info);
+
+  // käivitab CSS-animatsiooni (visible klass)
+  requestAnimationFrame(() => {
+    info.classList.add("visible");
+  });
+
+  setTimeout(() => {
+    info.classList.remove("visible");
+  }, 2000);
+
+  setTimeout(() => {
+    info.remove();
+  }, 2500);
+}
+
 export function renderCartView(rootElement, cart) {
   const section = document.createElement("section");
   section.className = "section";
@@ -31,18 +52,15 @@ export function renderCartView(rootElement, cart) {
     const unitPrice = product.price;
     const rowTotal = qty * unitPrice;
 
-    // Kaardi wrapper
     const card = document.createElement("div");
     card.className = "cart-item-card";
 
-    /* --- Pilt --- */
     const img = document.createElement("img");
     img.src = product.imageUrl;
     img.alt = product.name;
     img.className = "cart-item-img";
     card.appendChild(img);
 
-    /* --- Info blokk --- */
     const info = document.createElement("div");
     info.className = "cart-item-info";
 
@@ -66,28 +84,39 @@ export function renderCartView(rootElement, cart) {
     card.appendChild(info);
 
     /* -----------------------------------------
-       EEMALDA NUPP – PAREMALE JOONDATUD
+       EEMALDA NUPP + INFOTEADE
     ----------------------------------------- */
     const removeBtn = document.createElement("button");
     removeBtn.className = "cart-remove-btn";
     removeBtn.textContent = "X Eemalda";
 
     removeBtn.addEventListener("click", () => {
-      cart.removeItem(product.id);          // eemalda toode ostukorvist
-      rootElement.innerHTML = "";           // tühjenda
-      renderCartView(rootElement, cart);    // joonista uuesti
+      const cartItem = cart.items.find(
+        i => i.product.id === product.id
+      );
+
+      if (!cartItem) return;
+
+      if (cartItem.quantity > 1) {
+        cartItem.quantity--;
+        showRemoveInfo(`Vähendati: ${product.name}`);
+      } else {
+        cart.items = cart.items.filter(
+          i => i.product.id !== product.id
+        );
+        showRemoveInfo(`Eemaldatud: ${product.name}`);
+      }
+
+      rootElement.innerHTML = "";
+      renderCartView(rootElement, cart);
     });
 
     card.appendChild(removeBtn);
-
     list.appendChild(card);
   });
 
   section.appendChild(list);
 
-  /* -----------------------------------------
-     OSTUKORVI KOKKU
-  ----------------------------------------- */
   const totalEl = document.createElement("h3");
   totalEl.textContent = "Kokku: " + cart.getTotal().toFixed(2) + " €";
   section.appendChild(totalEl);

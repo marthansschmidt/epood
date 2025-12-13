@@ -1,5 +1,28 @@
 import { addToCart } from "../main.js";
 
+/* ---------------------------------------------
+   TOAST: lemmikuks lisamine / eemaldamine
+--------------------------------------------- */
+function showFavoriteInfo(message) {
+  const toast = document.createElement("div");
+  toast.className = "cart-info-toast";
+  toast.textContent = message;
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.classList.add("visible");
+  });
+
+  setTimeout(() => {
+    toast.classList.remove("visible");
+  }, 2000);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 2500);
+}
+
 export function renderProductDetailView(rootElement, product) {
   const section = document.createElement("section");
   section.className = "section";
@@ -11,10 +34,10 @@ export function renderProductDetailView(rootElement, product) {
 
   const detailCard = document.createElement("div");
   detailCard.className = "detail-card";
-  detailCard.style.position = "relative"; // lemmikunupu jaoks
+  detailCard.style.position = "relative";
 
   /* ---------------------------------------------------------
-     LEMMIKU NUPP
+     LEMMIKU NUPP + TOAST
   --------------------------------------------------------- */
   const favBtn = document.createElement("div");
   favBtn.className = "favorite-btn";
@@ -38,12 +61,15 @@ export function renderProductDetailView(rootElement, product) {
         window.appState.favorites.push(product);
       }
 
+      showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
     } else {
       favBtn.classList.remove("favorite-active");
 
       window.appState.favorites = window.appState.favorites.filter(
         p => p.id !== product.id
       );
+
+      showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
     }
   });
 
@@ -89,8 +115,8 @@ export function renderProductDetailView(rootElement, product) {
   buyBtn.textContent = "Osta kohe";
 
   buyBtn.addEventListener("click", (e) => {
-    e.stopPropagation();     // ära tee midagi muud
-    addToCart(product);      // lisa ostukorvi
+    e.stopPropagation();
+    addToCart(product);
   });
 
   info.appendChild(buyBtn);
