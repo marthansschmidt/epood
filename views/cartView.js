@@ -5,18 +5,12 @@ function showRemoveInfo(message) {
 
   document.body.appendChild(info);
 
-  // käivitab CSS-animatsiooni (visible klass)
   requestAnimationFrame(() => {
     info.classList.add("visible");
   });
 
-  setTimeout(() => {
-    info.classList.remove("visible");
-  }, 2000);
-
-  setTimeout(() => {
-    info.remove();
-  }, 2500);
+  setTimeout(() => info.classList.remove("visible"), 2000);
+  setTimeout(() => info.remove(), 2500);
 }
 
 export function renderCartView(rootElement, cart) {
@@ -35,22 +29,19 @@ export function renderCartView(rootElement, cart) {
     const emptyText = document.createElement("p");
     emptyText.textContent = "Ostukorv on tühi.";
     section.appendChild(emptyText);
-
     rootElement.appendChild(section);
     return;
   }
 
   /* -----------------------------------------
-     OSTUKORVI TOOTED KAARTIDENA
+     OSTUKORVI TOOTED
   ----------------------------------------- */
   const list = document.createElement("div");
   list.className = "cart-list";
 
   cart.items.forEach((item) => {
     const product = item.product;
-    const qty = item.quantity;
-    const unitPrice = product.price;
-    const rowTotal = qty * unitPrice;
+    const cartItem = cart.items.find(i => i.product.id === product.id);
 
     const card = document.createElement("div");
     card.className = "cart-item-card";
@@ -64,48 +55,70 @@ export function renderCartView(rootElement, cart) {
     const info = document.createElement("div");
     info.className = "cart-item-info";
 
-    const nameEl = document.createElement("h4");
-    nameEl.textContent = product.name;
-    info.appendChild(nameEl);
-
-    const qtyEl = document.createElement("p");
-    qtyEl.textContent = `Kogus: ${qty}x`;
-    info.appendChild(qtyEl);
-
-    const unitPriceEl = document.createElement("p");
-    unitPriceEl.textContent = `Ühiku hind: ${unitPrice.toFixed(2)} €`;
-    info.appendChild(unitPriceEl);
-
-    const rowTotalEl = document.createElement("p");
-    rowTotalEl.className = "cart-item-total";
-    rowTotalEl.textContent = `Rida kokku: ${rowTotal.toFixed(2)} €`;
-    info.appendChild(rowTotalEl);
-
-    card.appendChild(info);
+    info.innerHTML = `
+      <h4>${product.name}</h4>
+      <p>Ühiku hind: ${product.price.toFixed(2)} €</p>
+      <p class="cart-item-total">
+        Rida kokku: ${(cartItem.quantity * product.price).toFixed(2)} €
+      </p>
+    `;
 
     /* -----------------------------------------
-       EEMALDA NUPP + INFOTEADE
+       + / - NUPUD
     ----------------------------------------- */
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "cart-remove-btn";
-    removeBtn.textContent = "X Eemalda";
+    const qtyControls = document.createElement("div");
+    qtyControls.className = "cart-qty-controls";
 
-    removeBtn.addEventListener("click", () => {
-      const cartItem = cart.items.find(
-        i => i.product.id === product.id
-      );
+    const minusBtn = document.createElement("button");
+    minusBtn.textContent = "–";
 
-      if (!cartItem) return;
+    const qtyText = document.createElement("span");
+    qtyText.textContent = cartItem.quantity;
 
+    const plusBtn = document.createElement("button");
+    plusBtn.textContent = "+";
+
+    minusBtn.addEventListener("click", () => {
       if (cartItem.quantity > 1) {
         cartItem.quantity--;
         showRemoveInfo(`Vähendati: ${product.name}`);
       } else {
-        cart.items = cart.items.filter(
-          i => i.product.id !== product.id
-        );
+        cart.items = cart.items.filter(i => i.product.id !== product.id);
         showRemoveInfo(`Eemaldatud: ${product.name}`);
       }
+
+      rootElement.innerHTML = "";
+      renderCartView(rootElement, cart);
+    });
+
+    plusBtn.addEventListener("click", () => {
+      cartItem.quantity++;
+      showRemoveInfo(`Lisati: ${product.name}`);
+
+      rootElement.innerHTML = "";
+      renderCartView(rootElement, cart);
+    });
+
+    qtyControls.appendChild(minusBtn);
+    qtyControls.appendChild(qtyText);
+    qtyControls.appendChild(plusBtn);
+
+    info.appendChild(qtyControls);
+    card.appendChild(info);
+
+    /* -----------------------------------------
+       EEMALDA KÕIK NUPP
+    ----------------------------------------- */
+    const removeBtn = document.createElement("button");
+    removeBtn.className = "cart-remove-btn";
+    removeBtn.textContent = "❌ Eemalda kõik";
+
+    removeBtn.addEventListener("click", () => {
+      cart.items = cart.items.filter(
+        i => i.product.id !== product.id
+      );
+
+      showRemoveInfo(`Eemaldatud kõik: ${product.name}`);
 
       rootElement.innerHTML = "";
       renderCartView(rootElement, cart);

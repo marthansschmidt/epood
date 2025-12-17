@@ -1,8 +1,5 @@
 import { addToCart } from "../main.js";
 
-/* ---------------------------------------------
-   TOAST: lemmikuks lisamine / eemaldamine
---------------------------------------------- */
 function showFavoriteInfo(message) {
   const toast = document.createElement("div");
   toast.className = "cart-info-toast";
@@ -36,9 +33,6 @@ export function renderProductDetailView(rootElement, product) {
   detailCard.className = "detail-card";
   detailCard.style.position = "relative";
 
-  /* ---------------------------------------------------------
-     LEMMIKU NUPP + TOAST
-  --------------------------------------------------------- */
   const favBtn = document.createElement("div");
   favBtn.className = "favorite-btn";
 

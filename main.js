@@ -6,11 +6,6 @@ import { renderAllProductsView } from "./views/allProductsView.js";
 import { renderProductDetailView } from "./views/productDetailView.js";
 import { renderCartView } from "./views/cartView.js";
 
-
-
-/* ----------------------------------------
-   Mock andmed
----------------------------------------- */
 function createMockData() {
   const products = [
     new Product(1, "Sülearvuti", "Elektroonika", 3899,
@@ -55,19 +50,12 @@ function createMockData() {
 }
 
 
-
-/* ----------------------------------------
-   OSTUKORVI LISAMINE + TOAST
----------------------------------------- */
 export function addToCart(product) {
   window.appState.cart.addItem(product, 1);
   showToast(`"${product.name}" lisati ostukorvi!`);
 }
 
 
-/* ----------------------------------------
-   Toast-teavituse funktsioon
----------------------------------------- */
 export function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "toast-message";
@@ -75,21 +63,16 @@ export function showToast(message) {
 
   document.body.appendChild(toast);
 
-  // Väike viivitus animatsiooni jaoks
+
   setTimeout(() => toast.classList.add("visible"), 20);
 
-  // Eemaldamine pärast 2.5 s
+
   setTimeout(() => {
     toast.classList.remove("visible");
     setTimeout(() => toast.remove(), 300);
   }, 2500);
 }
 
-
-
-/* ----------------------------------------
-   Navigeerimine
----------------------------------------- */
 export function navigateToProduct(productId) {
   const root = document.getElementById("app");
   root.innerHTML = "";
@@ -133,22 +116,15 @@ export function navigateToCart() {
   renderCartView(root, window.appState.cart);
 }
 
-
-
-/* ----------------------------------------
-   Rakenduse INIT
----------------------------------------- */
 function initApp() {
   window.appState = createMockData();
 
   navigateToAllProducts();
 
-  // NAV nupud
   document.getElementById("nav-home").addEventListener("click", navigateToAllProducts);
   document.getElementById("nav-favorites").addEventListener("click", navigateToFavorites);
   document.getElementById("nav-cart").addEventListener("click", navigateToCart);
 
-  // Logo → avaleht
   const logo = document.querySelector(".logo");
   if (logo) logo.addEventListener("click", navigateToAllProducts);
 }

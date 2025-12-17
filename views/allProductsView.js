@@ -1,8 +1,5 @@
 import { navigateToProduct, addToCart } from "../main.js";
 
-/* ---------------------------------------------
-   TOAST: lemmikuks lisamine / eemaldamine
---------------------------------------------- */
 function showFavoriteInfo(message) {
   const toast = document.createElement("div");
   toast.className = "cart-info-toast";
@@ -39,14 +36,8 @@ export function renderAllProductsView(rootElement, products) {
     card.className = "product-card";
     card.style.cursor = "pointer";
 
-    /* ---------------------------------------------
-       Klikk kogu kaardile → detailvaade
-    --------------------------------------------- */
     card.addEventListener("click", () => navigateToProduct(product.id));
 
-    /* ---------------------------------------------
-       LEMMIKU NUPP + TOAST
-    --------------------------------------------- */
     const favBtn = document.createElement("div");
     favBtn.className = "favorite-btn";
     if (product.isFavorite) favBtn.classList.add("favorite-active");
