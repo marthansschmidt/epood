@@ -1,45 +1,15 @@
-import { Product } from "./constructors/product.js";
 import { Cart } from "./constructors/cart.js";
 import { Customer } from "./constructors/customer.js";
+
+import { fetchProducts } from "./api.js";
 
 import { renderAllProductsView } from "./views/allProductsView.js";
 import { renderProductDetailView } from "./views/productDetailView.js";
 import { renderCartView } from "./views/cartView.js";
 
-function createMockData() {
-  const products = [
-    new Product(1, "Sülearvuti", "Elektroonika", 3899,
-      "Võimas sülearvuti igapäevaseks tööks.",
-      "images/laptop.png", false),
 
-    new Product(2, "Nutitelefon", "Elektroonika", 1599.00,
-      "Kaasaegne nutitelefon hea kaameraga.",
-      "images/phone.png", false),
-
-    new Product(3, "Kohvikruus", "Köök", 19,
-      "Keraamiline kruus hommikukohviks.",
-      "images/mug.png", false),
-
-    new Product(4, "Seljakott", "Aksessuaarid", 49,
-      "Vastupidav seljakott igapäevaseks kasutamiseks.",
-      "images/bag.png", false),
-
-    new Product(5, "Jalanõud", "Aksessuaarid", 39,
-      "Kiired sussid kiiremateks asjadeks.",
-      "images/crocs.png", false),
-
-    new Product(6, "Rihm", "Flex", 229,
-      "Rihm, mis kannab ennast ise.",
-      "images/rihm.png", false),
-
-    new Product(7, "T-särk", "Flex", 329,
-      "Premium-kvaliteediga Flex T-särk, valmistatud pehmest ja hingavast kangast. Sobib igapäevaseks kandmiseks ja treeninguteks.",
-      "images/särk.webp", false),
-
-    new Product(8, "Käekell", "Flex", 9199,
-      "Eksklusiivne Flex käekell safiirklaasi ja täismetallist korpusega. Täpne mehaanika ja luksuslik disain igapäevaseks elegantsiks.",
-      "images/kell.avif", false)
-  ];
+async function createAppState() {
+  const products = await fetchProducts();
 
   return {
     products,
@@ -55,7 +25,6 @@ export function addToCart(product) {
   showToast(`"${product.name}" lisati ostukorvi!`);
 }
 
-
 export function showToast(message) {
   const toast = document.createElement("div");
   toast.className = "toast-message";
@@ -63,15 +32,14 @@ export function showToast(message) {
 
   document.body.appendChild(toast);
 
-
   setTimeout(() => toast.classList.add("visible"), 20);
-
 
   setTimeout(() => {
     toast.classList.remove("visible");
     setTimeout(() => toast.remove(), 300);
   }, 2500);
 }
+
 
 export function navigateToProduct(productId) {
   const root = document.getElementById("app");
@@ -92,18 +60,11 @@ export function navigateToFavorites() {
   root.innerHTML = "";
 
   const favs = window.appState.favorites;
-  const section = document.createElement("section");
-  section.className = "section";
-
-  const title = document.createElement("h2");
-  title.textContent = "Lemmikud";
-  section.appendChild(title);
 
   if (favs.length === 0) {
     const msg = document.createElement("p");
     msg.textContent = "Lemmikuid pole veel lisatud.";
-    section.appendChild(msg);
-    root.appendChild(section);
+    root.appendChild(msg);
     return;
   }
 
@@ -116,17 +77,28 @@ export function navigateToCart() {
   renderCartView(root, window.appState.cart);
 }
 
-function initApp() {
-  window.appState = createMockData();
 
-  navigateToAllProducts();
+async function initApp() {
+  try {
+    window.appState = await createAppState();
 
-  document.getElementById("nav-home").addEventListener("click", navigateToAllProducts);
-  document.getElementById("nav-favorites").addEventListener("click", navigateToFavorites);
-  document.getElementById("nav-cart").addEventListener("click", navigateToCart);
+    navigateToAllProducts();
 
-  const logo = document.querySelector(".logo");
-  if (logo) logo.addEventListener("click", navigateToAllProducts);
+    document.getElementById("nav-home")
+      .addEventListener("click", navigateToAllProducts);
+
+    document.getElementById("nav-favorites")
+      .addEventListener("click", navigateToFavorites);
+
+    document.getElementById("nav-cart")
+      .addEventListener("click", navigateToCart);
+
+    const logo = document.querySelector(".logo");
+    if (logo) logo.addEventListener("click", navigateToAllProducts);
+
+  } catch (error) {
+    console.error("Rakenduse käivitamine ebaõnnestus:", error);
+  }
 }
 
 initApp();
