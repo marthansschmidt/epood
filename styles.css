@@ -1,7 +1,3 @@
-/* ============================================================
-   VÄRVID – sinu uue paleti põhjal
-   ============================================================ */
-
 :root {
   --light: #FFFCF2;
   --stone: #CCC5B9;
@@ -70,6 +66,27 @@ header {
   transform: scale(1.07);
   border-color: var(--accent);
   box-shadow: 0 0 12px rgba(235, 94, 40, 0.55);
+}
+
+.cart-icon-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -8px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  background: red;
+  color: white;
+  font-weight: 700;
 }
 
 /* ============================================================
@@ -209,10 +226,6 @@ header {
   object-fit: contain;
   margin-bottom: 10px;
 }
-
-/* ============================================================
-   FAVORITE BUTTON
-   ============================================================ */
 
 .favorite-btn {
   position: absolute;
@@ -373,13 +386,58 @@ header {
   background: rgba(255,255,255,0.05);
 }
 
+/* Kinnita tellimus nupp */
+.order-btn {
+  margin-top: 20px;
+  padding: 12px 24px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.order-btn:hover {
+  background: #218838;
+}
+
+/* Popup overlay */
+.order-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.order-popup {
+  background: white;
+  padding: 25px 30px;
+  border-radius: 8px;
+  text-align: center;
+  max-width: 320px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+.order-popup h3 {
+  margin-bottom: 10px;
+}
+
+
 /* ============================================================
    TOAST / TEAVITUSRIBA
    ============================================================ */
 
 .toast-message {
   position: fixed;
-  bottom: -80px;                /* animatsiooniks peidus */
+  bottom: -80px;                
   right: 20px;
   background: var(--accent);
   color: var(--light);
@@ -397,7 +455,7 @@ header {
 }
 
 .toast-message.visible {
-  bottom: 20px;                 /* ilmub nähtavale */
+  bottom: 20px;                 
   opacity: 1;
 }
 
@@ -470,7 +528,7 @@ header {
 
 .cart-info-toast {
   position: fixed;
-  bottom: -80px;               /* alguses peidus (animatsioon) */
+  bottom: -80px;               
   right: 20px;
 
   background: var(--accent);

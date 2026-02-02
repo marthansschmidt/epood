@@ -4,7 +4,6 @@ export class Cart {
     this.items = [];
   }
 
-  // Funktsionaalsus pole hetkel klikkidega seotud, aga klass on valmis
   addItem(product, quantity = 1) {
     const existing = this.items.find((item) => item.product.id === product.id);
     if (existing) {
