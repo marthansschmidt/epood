@@ -1,0 +1,76 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Sülearvuti",
+      "category": "Elektroonika",
+      "price": 3899,
+      "description": "Võimas sülearvuti igapäevaseks tööks.",
+      "image": "images/laptop.png",
+      "favorite": false
+    },
+    {
+      "id": 2,
+      "name": "Nutitelefon",
+      "category": "Elektroonika",
+      "price": 1599,
+      "description": "Kaasaegne nutitelefon hea kaameraga.",
+      "image": "images/phone.png",
+      "favorite": false
+    },
+    {
+      "id": 3,
+      "name": "Kohvikruus",
+      "category": "Köök",
+      "price": 19,
+      "description": "Keraamiline kruus hommikukohviks.",
+      "image": "images/mug.png",
+      "favorite": false
+    },
+    {
+      "id": 4,
+      "name": "Seljakott",
+      "category": "Aksessuaarid",
+      "price": 49,
+      "description": "Vastupidav seljakott igapäevaseks kasutamiseks.",
+      "image": "images/bag.png",
+      "favorite": false
+    },
+    {
+      "id": 5,
+      "name": "Jalanõud",
+      "category": "Aksessuaarid",
+      "price": 39,
+      "description": "Kiired sussid kiiremateks asjadeks.",
+      "image": "images/crocs.png",
+      "favorite": false
+    },
+    {
+      "id": 6,
+      "name": "Rihm",
+      "category": "Aksessuaarid",
+      "price": 229,
+      "description": "Rihm, mis kannab ennast ise.",
+      "image": "images/rihm.png",
+      "favorite": false
+    },
+    {
+      "id": 7,
+      "name": "T-särk",
+      "category": "Aksessuaarid",
+      "price": 329,
+      "description": "Premium-kvaliteediga T-särk, valmistatud pehmest ja hingavast kangast. Sobib igapäevaseks kandmiseks ja treeninguteks.",
+      "image": "images/särk.webp",
+      "favorite": false
+    },
+    {
+      "id": 8,
+      "name": "Käekell",
+      "category": "Aksessuaarid",
+      "price": 9199,
+      "description": "Eksklusiivne käekell safiirklaasi ja täismetallist korpusega. Täpne mehaanika ja luksuslik disain igapäevaseks elegantsiks.",
+      "image": "images/kell.avif",
+      "favorite": false
+    }
+  ]
+}

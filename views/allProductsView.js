@@ -1,4 +1,5 @@
 import { navigateToProduct, addToCart } from "../main.js";
+import { addFavorite, removeFavorite } from "../api.js";
 
 function showFavoriteInfo(message) {
   const toast = document.createElement("div");
@@ -31,15 +32,27 @@ export function renderAllProductsView(rootElement, products) {
   const grid = document.createElement("div");
   grid.className = "product-grid";
 
-  products.forEach(product => {
+  products.forEach((product) => {
     const card = document.createElement("div");
     card.className = "product-card";
     card.style.cursor = "pointer";
 
-    card.addEventListener("click", () => navigateToProduct(product.id));
+   card.addEventListener("click", (event) => {
+  // kui klikiti lemmikunupul või selle sees oleval ikoonil, ära navigeeri
+  if (event.target.closest(".favorite-btn")) return;
 
-    const favBtn = document.createElement("div");
+  // kui klikiti "Osta kohe" nupul, ära navigeeri
+  if (event.target.closest(".btn-primary")) return;
+
+  navigateToProduct(product.id);
+});
+
+
+    // ✅ tee lemmikunupp buttoniks, et kontrollida default-käitumist
+    const favBtn = document.createElement("button");
     favBtn.className = "favorite-btn";
+    favBtn.type = "button";
+    favBtn.setAttribute("aria-label", "Lisa/eemalda lemmik");
     if (product.isFavorite) favBtn.classList.add("favorite-active");
 
     const favIcon = document.createElement("img");
@@ -47,74 +60,78 @@ export function renderAllProductsView(rootElement, products) {
     favIcon.alt = "Lemmik";
     favBtn.appendChild(favIcon);
 
-    favBtn.addEventListener("click", (event) => {
+    favBtn.addEventListener("click", async (event) => {
+      event.preventDefault();
       event.stopPropagation();
+      event.stopImmediatePropagation();
 
-      product.isFavorite = !product.isFavorite;
+      const customerId = window.appState.customer.id;
+      const wasFavorite = !!product.isFavorite;
 
-      if (product.isFavorite) {
-        favBtn.classList.add("favorite-active");
+      // optimistlik UI
+      product.isFavorite = !wasFavorite;
+      favBtn.classList.toggle("favorite-active", product.isFavorite);
 
-        if (!window.appState.favorites.includes(product)) {
-          window.appState.favorites.push(product);
+      try {
+        if (product.isFavorite) {
+          await addFavorite(customerId, product.id);
+
+          // ✅ uuenda lokaalselt, et "Lemmikud" vaade kohe näitaks
+          if (!window.appState.favorites.some((p) => p.id === product.id)) {
+            window.appState.favorites.push(product);
+          }
+
+          showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
+        } else {
+          await removeFavorite(customerId, product.id);
+
+          window.appState.favorites = window.appState.favorites.filter(
+            (p) => p.id !== product.id
+          );
+
+          showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
         }
-
-        showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
-      } else {
-        favBtn.classList.remove("favorite-active");
-
-        window.appState.favorites = window.appState.favorites.filter(
-          p => p.id !== product.id
-        );
-
-        showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
+      } catch (e) {
+        // rollback vea korral
+        product.isFavorite = wasFavorite;
+        favBtn.classList.toggle("favorite-active", product.isFavorite);
+        showFavoriteInfo("Lemmiku salvestamine ebaõnnestus.");
+        console.error(e);
       }
     });
 
     card.appendChild(favBtn);
 
-    /* ---------------------------------------------
-       TOOTE PILT
-    --------------------------------------------- */
     const img = document.createElement("img");
     img.src = product.imageUrl;
     img.alt = product.name;
     card.appendChild(img);
 
-    /* ---------------------------------------------
-       NIMI
-    --------------------------------------------- */
     const name = document.createElement("h4");
     name.textContent = product.name;
     card.appendChild(name);
 
-    /* ---------------------------------------------
-       KIRJELDUS
-    --------------------------------------------- */
     const desc = document.createElement("p");
     desc.textContent = product.description;
     card.appendChild(desc);
 
-    /* ---------------------------------------------
-       HIND
-    --------------------------------------------- */
     const price = document.createElement("p");
     price.className = "price";
     price.textContent = product.price + " €";
     card.appendChild(price);
 
-    /* ---------------------------------------------
-       OSTA KOHE
-    --------------------------------------------- */
     const actions = document.createElement("div");
     actions.className = "product-actions";
 
     const buyBtn = document.createElement("button");
     buyBtn.className = "btn-primary";
+    buyBtn.type = "button";
     buyBtn.textContent = "Osta kohe";
 
     buyBtn.addEventListener("click", (event) => {
+      event.preventDefault();
       event.stopPropagation();
+      event.stopImmediatePropagation();
       addToCart(product);
     });
 

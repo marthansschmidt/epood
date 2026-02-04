@@ -1,22 +1,60 @@
 import { Cart } from "./constructors/cart.js";
 import { Customer } from "./constructors/customer.js";
 
-import { fetchProducts } from "./api.js";
+import { fetchProducts, fetchFavorites } from "./api.js";
 
 import { renderAllProductsView } from "./views/allProductsView.js";
 import { renderProductDetailView } from "./views/productDetailView.js";
 import { renderCartView } from "./views/cartView.js";
 
+let id = localStorage.getItem("customerId");
+if (!id) {
+  id = "1";
+  localStorage.setItem("customerId", id);
+}
+
 async function createAppState() {
   const products = await fetchProducts();
 
+  // Lae lemmikud BE-st (tagastab [productId, ...])
+  let favoriteIds = [];
+  try {
+    favoriteIds = await fetchFavorites(id);
+  } catch (e) {
+    console.error("Lemmikute laadimine ebaõnnestus:", e);
+    favoriteIds = [];
+  }
+
+  const favoriteSet = new Set(favoriteIds);
+
+  // Märgi toodetel isFavorite
+  products.forEach((p) => {
+    p.isFavorite = favoriteSet.has(p.id);
+  });
+
+  // Tee favorites list tootest (FE vaate jaoks)
+  const favorites = products.filter((p) => p.isFavorite);
+
+  const cart = new Cart();
+
+  // Taasta ostukorv localStorage-st
+  const savedCart = localStorage.getItem("cart");
+  if (savedCart) {
+    try {
+      cart.items = JSON.parse(savedCart);
+    } catch {
+      cart.items = [];
+    }
+  }
+
   return {
     products,
-    favorites: [],
-    customer: new Customer(1, "Test Klient", "test@example.com"),
-    cart: new Cart()
+    favorites,
+    customer: new Customer(Number(id), "Test Klient", "test@example.com"),
+    cart
   };
 }
+
 
 /* -----------------------------
    HEADER: OSTUKORVI KOGUS
@@ -35,9 +73,16 @@ export function updateCartCount() {
 
 export function addToCart(product) {
   window.appState.cart.addItem(product, 1);
+
+  // Salvesta localStorage
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(window.appState.cart.items)
+  );
+
   showToast(`"${product.name}" lisati ostukorvi!`);
 
-  updateCartCount(); 
+  updateCartCount();
 }
 
 export function showToast(message) {
@@ -98,7 +143,7 @@ export function navigateToCart() {
   root.innerHTML = "";
   renderCartView(root, window.appState.cart);
 
-  updateCartCount(); 
+  updateCartCount();
 }
 
 async function initApp() {
@@ -119,7 +164,7 @@ async function initApp() {
     const logo = document.querySelector(".logo");
     if (logo) logo.addEventListener("click", navigateToAllProducts);
 
-    updateCartCount(); 
+    updateCartCount();
   } catch (error) {
     console.error("Rakenduse käivitamine ebaõnnestus:", error);
   }

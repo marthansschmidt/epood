@@ -1,4 +1,5 @@
 import { addToCart } from "../main.js";
+import { addFavorite, removeFavorite } from "../api.js";
 
 function showFavoriteInfo(message) {
   const toast = document.createElement("div");
@@ -33,8 +34,11 @@ export function renderProductDetailView(rootElement, product) {
   detailCard.className = "detail-card";
   detailCard.style.position = "relative";
 
-  const favBtn = document.createElement("div");
+  // ✅ fav nupp buttoniks (nagu allProductsView)
+  const favBtn = document.createElement("button");
   favBtn.className = "favorite-btn";
+  favBtn.type = "button";
+  favBtn.setAttribute("aria-label", "Lisa/eemalda lemmik");
 
   if (product.isFavorite) favBtn.classList.add("favorite-active");
 
@@ -43,35 +47,49 @@ export function renderProductDetailView(rootElement, product) {
   favIcon.alt = "Lemmik";
   favBtn.appendChild(favIcon);
 
-  favBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
+  favBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
 
-    product.isFavorite = !product.isFavorite;
+    const customerId = window.appState.customer.id;
+    const wasFavorite = !!product.isFavorite;
 
-    if (product.isFavorite) {
-      favBtn.classList.add("favorite-active");
+    // optimistlik UI
+    product.isFavorite = !wasFavorite;
+    favBtn.classList.toggle("favorite-active", product.isFavorite);
 
-      if (!window.appState.favorites.includes(product)) {
-        window.appState.favorites.push(product);
+    try {
+      if (product.isFavorite) {
+        await addFavorite(customerId, product.id);
+
+        // hoia FE favorites list sünkis (Favorites vaade kasutab seda)
+        if (!window.appState.favorites.some((p) => p.id === product.id)) {
+          window.appState.favorites.push(product);
+        }
+
+        showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
+      } else {
+        await removeFavorite(customerId, product.id);
+
+        window.appState.favorites = window.appState.favorites.filter(
+          (p) => p.id !== product.id
+        );
+
+        showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
       }
-
-      showFavoriteInfo(`Lisatud lemmikutesse: ${product.name}`);
-    } else {
-      favBtn.classList.remove("favorite-active");
-
-      window.appState.favorites = window.appState.favorites.filter(
-        p => p.id !== product.id
-      );
-
-      showFavoriteInfo(`Eemaldatud lemmikutest: ${product.name}`);
+    } catch (e) {
+      // rollback vea korral
+      product.isFavorite = wasFavorite;
+      favBtn.classList.toggle("favorite-active", product.isFavorite);
+      showFavoriteInfo("Lemmiku salvestamine ebaõnnestus.");
+      console.error(e);
     }
   });
 
   detailCard.appendChild(favBtn);
 
-  /* ---------------------------------------------------------
-     PILT
-  --------------------------------------------------------- */
+  /* PILT */
   if (product.imageUrl) {
     const img = document.createElement("img");
     img.src = product.imageUrl;
@@ -79,9 +97,7 @@ export function renderProductDetailView(rootElement, product) {
     detailCard.appendChild(img);
   }
 
-  /* ---------------------------------------------------------
-     INFO BLOKK
-  --------------------------------------------------------- */
+  /* INFO */
   const info = document.createElement("div");
   info.className = "detail-info";
 
@@ -101,15 +117,16 @@ export function renderProductDetailView(rootElement, product) {
   descEl.textContent = "Kirjeldus: " + product.description;
   info.appendChild(descEl);
 
-  /* ---------------------------------------------------------
-     OSTA KOHE NUPP
-  --------------------------------------------------------- */
+  /* OSTA KOHE */
   const buyBtn = document.createElement("button");
   buyBtn.className = "btn-primary";
+  buyBtn.type = "button";
   buyBtn.textContent = "Osta kohe";
 
-  buyBtn.addEventListener("click", (e) => {
-    e.stopPropagation();
+  buyBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
     addToCart(product);
   });
 

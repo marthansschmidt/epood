@@ -1,22 +1,10 @@
 import { renderAllProductsView } from "./allProductsView.js";
 
 export function renderFavoritesView(root, favorites) {
-  const section = document.createElement("section");
-  section.className = "section";
-
-  const title = document.createElement("h2");
-  title.textContent = "Lemmikud";
-  section.appendChild(title);
-
-  if (!favorites.length) {
-    const empty = document.createElement("p");
-    empty.textContent = "Lemmikuid pole veel lisatud.";
-    section.appendChild(empty);
-    root.appendChild(section);
-    return;
-  }
-
-  root.appendChild(section);
-
+  // Lihtsalt kasuta sama view'd, aga muuda pealkiri enne
+  root.innerHTML = "";
   renderAllProductsView(root, favorites);
+
+  const h2 = root.querySelector("h2");
+  if (h2) h2.textContent = "Lemmikud";
 }
